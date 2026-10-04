@@ -1,0 +1,112 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Represents a Founder's profile and state in FounderOS.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "age": { "type": "string" },
+        "country": { "type": "string" },
+        "education": { "type": "string" },
+        "skills": { "type": "array" },
+        "experience": { "type": "string" },
+        "previousProjects": { "type": "string" },
+        "budget": { "type": "string" },
+        "timeAvailable": { "type": "string" },
+        "interests": { "type": "array" },
+        "industryExperience": { "type": "string" },
+        "archetype": { "type": "string" },
+        "strengths": { "type": "array" },
+        "weaknesses": { "type": "array" },
+        "founderScore": { "type": "integer" },
+        "xp": { "type": "integer" },
+        "level": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name"]
+    },
+    "StartupReport": {
+      "title": "StartupReport",
+      "description": "A generated Startup Evaluation & Roadmap containing AI insights.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "startupName": { "type": "string" },
+        "idea": { "type": "string" },
+        "targetUsers": { "type": "string" },
+        "revenueModel": { "type": "string" },
+        "problemSolved": { "type": "string" },
+        "startupScore": { "type": "integer" },
+        "fitScore": { "type": "integer" },
+        "readinessScore": { "type": "integer" },
+        "validation": { "type": "object" },
+        "competitors": { "type": "array" },
+        "fitAnalysis": { "type": "object" },
+        "improvements": { "type": "object" },
+        "alternativeIdeas": { "type": "array" },
+        "skillGaps": { "type": "object" },
+        "learningResources": { "type": "array" },
+        "roadmap": { "type": "object" },
+        "mvpPlan": { "type": "object" },
+        "revenuePlan": { "type": "object" },
+        "investorMode": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "startupName", "idea"]
+    },
+    "MentorChatMessage": {
+      "title": "MentorChatMessage",
+      "description": "Messages between the founder and the AI Mentor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "sender": { "type": "string", "enum": ["user", "mentor"] },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "sender", "text", "timestamp"]
+    },
+    "WeeklyAudit": {
+      "title": "WeeklyAudit",
+      "description": "Founder's self-audited performance logs with AI feedback.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "weekStartDate": { "type": "string" },
+        "completedTasks": { "type": "string" },
+        "skillsLearned": { "type": "string" },
+        "progressMade": { "type": "string" },
+        "biggestWin": { "type": "string" },
+        "biggestMistake": { "type": "string" },
+        "biggestBottleneck": { "type": "string" },
+        "nextWeekPriority": { "type": "string" },
+        "aiFeedback": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "weekStartDate"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles indexed by UID"
+    },
+    "startup_reports/{reportId}": {
+      "schema": "StartupReport",
+      "description": "Startup evaluation reports"
+    },
+    "mentor_chats/{messageId}": {
+      "schema": "MentorChatMessage",
+      "description": "Chat transcriptions with AI mentor"
+    },
+    "weekly_audits/{auditId}": {
+      "schema": "WeeklyAudit",
+      "description": "Weekly progress audits"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "FounderOS",
+  "description": "An AI-powered Founder Intelligence and Venture Validation Platform helping entrepreneurs calculate Founder-Idea Fit, map competitive SWOT matrices, and compile structured launching roadmaps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
