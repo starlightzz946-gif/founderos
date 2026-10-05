@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { UserProfile, StartupIdea, WeeklyAudit } from "../types";
-import { User, Award, Brain, Rocket, Plus, Trash2, Milestone, Sparkles, PlusCircle } from "lucide-react";
+import { User, Award, Brain, Rocket, Plus, Trash2, Milestone, Sparkles, PlusCircle, Globe } from "lucide-react";
 
 // --- PROFILE FORM COMPONENT ---
 interface ProfileFormProps {
@@ -23,6 +23,21 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
   // Skills Tag management
   const [skills, setSkills] = useState<string[]>(profile?.skills || []);
   const [newSkill, setNewSkill] = useState("");
+
+  // Sync state if profile prop changes
+  useEffect(() => {
+    setName(profile?.name || "");
+    setAge(profile?.age || "");
+    setCountry(profile?.country || "");
+    setEducation(profile?.education || "");
+    setExperience(profile?.experience || "");
+    setPreviousProjects(profile?.previousProjects || "");
+    setBudget(profile?.budget || "");
+    setTimeAvailable(profile?.timeAvailable || "");
+    setIndustryExperience(profile?.industryExperience || "");
+    setSkills(profile?.skills || []);
+    setInterests(profile?.interests || []);
+  }, [profile]);
 
   const handleAddSkill = () => {
     if (newSkill.trim() && !skills.includes(newSkill.trim())) {
@@ -127,7 +142,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Full Name</label>
           <input
             type="text"
-            value={name}
+            value={name || ""}
             onChange={(e) => setName(e.target.value)}
             required
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-all"
@@ -139,7 +154,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Age</label>
           <input
             type="text"
-            value={age}
+            value={age || ""}
             onChange={(e) => setAge(e.target.value)}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-all"
             placeholder="29"
@@ -150,7 +165,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Country / Region</label>
           <input
             type="text"
-            value={country}
+            value={country || ""}
             onChange={(e) => setCountry(e.target.value)}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-all"
             placeholder="United States"
@@ -162,7 +177,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
         <div className="space-y-1">
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Education & Credentials</label>
           <textarea
-            value={education}
+            value={education || ""}
             onChange={(e) => setEducation(e.target.value)}
             rows={2}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-all resize-none"
@@ -173,7 +188,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
         <div className="space-y-1">
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Core Industrial Expertise</label>
           <textarea
-            value={industryExperience}
+            value={industryExperience || ""}
             onChange={(e) => setIndustryExperience(e.target.value)}
             rows={2}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition-all resize-none"
@@ -209,7 +224,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
           <input
             type="text"
             placeholder="e.g. React Programming, Project Management, Growth Hacking"
-            value={newSkill}
+            value={newSkill || ""}
             onChange={(e) => setNewSkill(e.target.value)}
             className="flex-grow bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none"
           />
@@ -227,7 +242,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
         <div className="space-y-1">
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Career Experience Details</label>
           <textarea
-            value={experience}
+            value={experience || ""}
             onChange={(e) => setExperience(e.target.value)}
             rows={3}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
@@ -238,11 +253,11 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
         <div className="space-y-1">
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Previous Startup / Protolife launches</label>
           <textarea
-            value={previousProjects}
+            value={previousProjects || ""}
             onChange={(e) => setPreviousProjects(e.target.value)}
             rows={3}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
-            placeholder="Landed sales? Coded MVPs? Sold newsletter lists?"
+            placeholder="Landed sales? Coded MVPs? Sold newsletter lists..."
           />
         </div>
       </div>
@@ -252,7 +267,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Venture Budget Target</label>
           <input
             type="text"
-            value={budget}
+            value={budget || ""}
             onChange={(e) => setBudget(e.target.value)}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
             placeholder="E.g. $2,000"
@@ -263,7 +278,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Weekly Time budget</label>
           <input
             type="text"
-            value={timeAvailable}
+            value={timeAvailable || ""}
             onChange={(e) => setTimeAvailable(e.target.value)}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
             placeholder="E.g. 20 hours / week"
@@ -298,7 +313,7 @@ export function ProfileForm({ profile, onSaveProfile, onUpdateXP }: ProfileFormP
           <input
             type="text"
             placeholder="e.g. Web Automation, local service businesses, AI integrations"
-            value={newInterest}
+            value={newInterest || ""}
             onChange={(e) => setNewInterest(e.target.value)}
             className="flex-grow bg-slate-950 border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none"
           />
@@ -335,11 +350,32 @@ interface IdeaFormProps {
 }
 
 export function IdeaForm({ startup, onChangeStartup, onAnalyze, analyzing }: IdeaFormProps) {
-  const [name, setName] = useState(startup.startupName);
-  const [idea, setIdea] = useState(startup.idea);
-  const [users, setUsers] = useState(startup.targetUsers);
-  const [model, setModel] = useState(startup.revenueModel);
-  const [problem, setProblem] = useState(startup.problemSolved);
+  const [name, setName] = useState(startup?.startupName || "");
+  const [idea, setIdea] = useState(startup?.idea || "");
+  const [users, setUsers] = useState(startup?.targetUsers || "");
+  const [model, setModel] = useState(startup?.revenueModel || "");
+  const [problem, setProblem] = useState(startup?.problemSolved || "");
+  const [researchStage, setResearchStage] = useState(0);
+
+  // Sync state if startup prop changes
+  useEffect(() => {
+    setName(startup?.startupName || "");
+    setIdea(startup?.idea || "");
+    setUsers(startup?.targetUsers || "");
+    setModel(startup?.revenueModel || "");
+    setProblem(startup?.problemSolved || "");
+  }, [startup]);
+
+  useEffect(() => {
+    if (!analyzing) {
+      setResearchStage(0);
+      return;
+    }
+    const timer = setInterval(() => {
+      setResearchStage((prev) => (prev < 3 ? prev + 1 : prev));
+    }, 2400);
+    return () => clearInterval(timer);
+  }, [analyzing]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -370,7 +406,7 @@ export function IdeaForm({ startup, onChangeStartup, onAnalyze, analyzing }: Ide
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Venture Name / Title</label>
           <input
             type="text"
-            value={name}
+            value={name || ""}
             onChange={(e) => setName(e.target.value)}
             required
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
@@ -382,7 +418,7 @@ export function IdeaForm({ startup, onChangeStartup, onAnalyze, analyzing }: Ide
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Revenue Structure / Pricing</label>
           <input
             type="text"
-            value={model}
+            value={model || ""}
             onChange={(e) => setModel(e.target.value)}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
             placeholder="e.g. $49/mo SaaS + 1.5% transaction commission"
@@ -393,7 +429,7 @@ export function IdeaForm({ startup, onChangeStartup, onAnalyze, analyzing }: Ide
       <div className="space-y-1">
         <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Venture Idea / Solution Concept</label>
         <textarea
-          value={idea}
+          value={idea || ""}
           onChange={(e) => setIdea(e.target.value)}
           required
           rows={3}
@@ -406,7 +442,7 @@ export function IdeaForm({ startup, onChangeStartup, onAnalyze, analyzing }: Ide
         <div className="space-y-1">
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Target User Archetype</label>
           <textarea
-            value={users}
+            value={users || ""}
             onChange={(e) => setUsers(e.target.value)}
             rows={3}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
@@ -417,7 +453,7 @@ export function IdeaForm({ startup, onChangeStartup, onAnalyze, analyzing }: Ide
         <div className="space-y-1">
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Problem Being Solved</label>
           <textarea
-            value={problem}
+            value={problem || ""}
             onChange={(e) => setProblem(e.target.value)}
             rows={3}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none font-sans"
@@ -427,11 +463,30 @@ export function IdeaForm({ startup, onChangeStartup, onAnalyze, analyzing }: Ide
       </div>
 
       {analyzing ? (
-        <div className="p-6 bg-white/5 border border-white/10 text-center rounded-2xl space-y-3 font-sans">
-          <span className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full block mx-auto" />
-          <h4 className="text-sm font-bold text-white">Gemini startup modeling has been triggered...</h4>
-          <p className="text-xs text-slate-400 max-w-lg mx-auto">
-            We are deploying our deep comparative validation scripts. Generating SWOT maps, competitor lists, learning gaps, 30/60/90 execution paths, SQL/Firestore layouts, and investor replies. This takes up to 10 seconds.
+        <div className="p-8 bg-white/5 border border-white/10 text-center rounded-2xl space-y-4 font-sans backdrop-blur-md">
+          <div className="relative w-12 h-12 mx-auto">
+            <span className="animate-spin w-12 h-12 border-3 border-blue-500/30 border-t-blue-400 rounded-full block" />
+            <Globe className="w-5 h-5 text-cyan-400 absolute inset-0 m-auto animate-pulse" />
+          </div>
+          <div className="space-y-1">
+            <h4 className="text-sm font-bold text-white tracking-wide transition-all">
+              {researchStage === 0 && "Analyzing founder profile & venture hypothesis..."}
+              {researchStage === 1 && "Researching live market evidence via SerpApi..."}
+              {researchStage === 2 && "Analyzing competitors, news & customer search signals..."}
+              {researchStage === 3 && "Synthesizing FounderOS intelligence report with Gemini..."}
+            </h4>
+            <p className="text-xs text-cyan-300/80 font-mono">
+              Stage {researchStage + 1} of 4 • Grounding intelligence in live web signals
+            </p>
+          </div>
+          <div className="w-full max-w-md mx-auto bg-white/10 h-1.5 rounded-full overflow-hidden">
+            <div
+              className="bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 h-full transition-all duration-700 rounded-full"
+              style={{ width: `${(researchStage + 1) * 25}%` }}
+            />
+          </div>
+          <p className="text-[11px] text-slate-400 max-w-md mx-auto">
+            Targeted queries are dispatched concurrently across Google Search and Google News to substantiate competitor matrices and market signals.
           </p>
         </div>
       ) : (
@@ -528,7 +583,7 @@ export function AuditForm({ onAddAudit, audits, onUpdateXP }: AuditFormProps) {
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Completed Actions This Week</label>
             <input
               type="text"
-              value={completedTasks}
+              value={completedTasks || ""}
               onChange={(e) => setCompletedTasks(e.target.value)}
               className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
               placeholder="e.g. Conducted 3 Mom-Test contractor interviews"
@@ -539,7 +594,7 @@ export function AuditForm({ onAddAudit, audits, onUpdateXP }: AuditFormProps) {
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Skills Acquired / Practiced</label>
             <input
               type="text"
-              value={skillsLearned}
+              value={skillsLearned || ""}
               onChange={(e) => setSkillsLearned(e.target.value)}
               className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
               placeholder="e.g. Stripe checkout Connect API configs"
@@ -552,7 +607,7 @@ export function AuditForm({ onAddAudit, audits, onUpdateXP }: AuditFormProps) {
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Biggest Launch Win</label>
             <input
               type="text"
-              value={biggestWin}
+              value={biggestWin || ""}
               onChange={(e) => setBiggestWin(e.target.value)}
               className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
               placeholder="Grandfathered first trade for $49/mo"
@@ -562,7 +617,7 @@ export function AuditForm({ onAddAudit, audits, onUpdateXP }: AuditFormProps) {
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Biggest Validation Mistake</label>
             <input
               type="text"
-              value={biggestMistake}
+              value={biggestMistake || ""}
               onChange={(e) => setBiggestMistake(e.target.value)}
               className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
               placeholder="Bought domain names before talks"
@@ -572,7 +627,7 @@ export function AuditForm({ onAddAudit, audits, onUpdateXP }: AuditFormProps) {
             <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Highest Friction Bottleneck</label>
             <input
               type="text"
-              value={biggestBottleneck}
+              value={biggestBottleneck || ""}
               onChange={(e) => setBiggestBottleneck(e.target.value)}
               className="w-full bg-slate-950 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
               placeholder="Finding landscapers around local areas"
@@ -584,7 +639,7 @@ export function AuditForm({ onAddAudit, audits, onUpdateXP }: AuditFormProps) {
           <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Proposed High Priority Next Week</label>
           <input
             type="text"
-            value={nextWeekPriority}
+            value={nextWeekPriority || ""}
             onChange={(e) => setNextWeekPriority(e.target.value)}
             className="w-full bg-slate-950 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
             placeholder="Draft simple high-fidelity payment link template screen in standard React"

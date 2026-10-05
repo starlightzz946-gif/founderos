@@ -303,5 +303,130 @@ export const demoReport: StartupReport = {
     ],
     fundingReadiness: "Pre-seed ready. High validation margins. Once Sarah demonstrates $1,000 in monthly platform transactions with her pilot group, she holds perfect metrics for an angel round."
   },
+  marketResearch: {
+    enabled: true,
+    searchedAt: "2026-06-10T08:35:40Z",
+    queries: [
+      "landscaping scheduling dispatch software competitors",
+      "field service contractor tipping solutions tools",
+      "[News] field service management venture funding trends",
+      "[Maps] residential landscaping contractor tools United States"
+    ],
+    competitors: [
+      {
+        name: "Jobber",
+        link: "https://getjobber.com",
+        domain: "getjobber.com",
+        snippet: "Field service management software for small home service businesses, offering dispatching, invoicing, client communication, and team tracking.",
+        sourceType: "Google Search"
+      },
+      {
+        name: "Housecall Pro",
+        link: "https://www.housecallpro.com",
+        domain: "housecallpro.com",
+        snippet: "All-in-one software platform for trade contractors to manage scheduling, payments, dispatching, and QuickBooks syncing.",
+        sourceType: "Google Search"
+      },
+      {
+        name: "Yardbook",
+        link: "https://www.yardbook.com",
+        domain: "yardbook.com",
+        snippet: "Business software platform designed specifically for landscaping businesses to handle customer billing, estimates, and schedules.",
+        sourceType: "Google Search"
+      },
+      {
+        name: "LawnStarter Platform",
+        link: "https://www.lawnstarter.com",
+        domain: "lawnstarter.com",
+        snippet: "On-demand marketplace connecting homeowners with independent lawn care and pool maintenance crews.",
+        sourceType: "Google Search"
+      }
+    ],
+    news: [
+      {
+        title: "Vertical SaaS for Home Services Attracts Record Pre-Seed Funding in 2025-2026",
+        source: "TechCrunch",
+        link: "https://techcrunch.com",
+        date: "May 2026",
+        snippet: "Investors are doubling down on mobile-first vertical software solving payment collections and SMS dispatch for sole-proprietor contractors."
+      },
+      {
+        title: "Contactless Tipping in Trade Services Surges 42% Post-Pandemic",
+        source: "Wall Street Journal",
+        link: "https://wsj.com",
+        date: "April 2026",
+        snippet: "Service crews receiving direct mobile tip links report significantly lower turnover and higher job satisfaction rates."
+      }
+    ],
+    keySignals: [
+      "Customer Concern: How do I invoice residential lawn customers without high credit card processing fees?",
+      "Customer Concern: Best simple mobile dispatch app for non-technical 2-person landscaping crews",
+      "Market Dynamic: Incumbents charge $120+/mo and require extensive desktop training, leaving sole-proprietors underserved"
+    ],
+    pricingSignals: [
+      {
+        title: "Jobber Core Plan",
+        price: "$69/mo",
+        merchant: "Jobber Official",
+        link: "https://getjobber.com/pricing"
+      },
+      {
+        title: "Housecall Pro Basic",
+        price: "$79/mo",
+        merchant: "Housecall Pro",
+        link: "https://www.housecallpro.com/pricing"
+      }
+    ],
+    localCompetitors: [
+      {
+        name: "GreenThumb Turf & Landscape",
+        address: "Austin, TX Metro",
+        rating: 4.8,
+        reviews: 142,
+        link: "https://maps.google.com"
+      },
+      {
+        name: "Apex Outdoor Maintenance",
+        address: "Round Rock, TX",
+        rating: 4.6,
+        reviews: 89,
+        link: "https://maps.google.com"
+      }
+    ],
+    sources: [
+      {
+        title: "Jobber Field Service Software Portal",
+        link: "https://getjobber.com",
+        domain: "getjobber.com",
+        snippet: "Leading dispatch and invoicing platform for residential contractors.",
+        type: "search"
+      },
+      {
+        title: "Housecall Pro Contractors Suite",
+        link: "https://www.housecallpro.com",
+        domain: "housecallpro.com",
+        snippet: "Comprehensive scheduling and invoicing software for service trades.",
+        type: "search"
+      },
+      {
+        title: "Yardbook Landscaper Community Portal",
+        link: "https://www.yardbook.com",
+        domain: "yardbook.com",
+        snippet: "Tailored landscaping management and billing software for micro-crews.",
+        type: "search"
+      },
+      {
+        title: "TechCrunch: Home Services Tech Expansion",
+        link: "https://techcrunch.com",
+        domain: "techcrunch.com",
+        snippet: "Analysis of venture trends in SMB trades software.",
+        type: "news"
+      }
+    ],
+    limitations: [
+      "Web results reflect indexed public websites and pricing sheets as of June 2026.",
+      "Private regional contracts and informal referral agreements are not tracked via web search indexing."
+    ]
+  },
   createdAt: "2026-06-10T08:35:44Z"
 };

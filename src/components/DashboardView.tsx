@@ -217,7 +217,7 @@ export default function DashboardView({ profile, report, onUpdateXP, onNavigateT
             <input
               type="text"
               placeholder="e.g. Set up booking form pre-authorizations..."
-              value={newTaskText}
+              value={newTaskText || ""}
               onChange={(e) => setNewTaskText(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleAddTask()}
               className="flex-grow bg-[#050505]/60 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 transition-all font-sans"

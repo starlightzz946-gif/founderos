@@ -1,18 +1,40 @@
 import React, { useState } from "react";
 import { StartupReport } from "../types";
-import { Download, Target, ShieldAlert, Zap, BookOpen, Layers, Milestone, TrendingUp, Presentation, AlertCircle, Printer, FileText } from "lucide-react";
+import {
+  Download,
+  Target,
+  ShieldAlert,
+  Zap,
+  BookOpen,
+  Layers,
+  Milestone,
+  TrendingUp,
+  Presentation,
+  AlertCircle,
+  Printer,
+  FileText,
+  Globe,
+  ExternalLink,
+  Search,
+  Newspaper,
+  ShoppingBag,
+  MapPin,
+  CheckCircle
+} from "lucide-react";
 
 interface ReportViewProps {
   report: StartupReport;
+  onNavigateToTab?: (tab: string) => void;
 }
 
-export default function ReportView({ report }: ReportViewProps) {
+export default function ReportView({ report, onNavigateToTab }: ReportViewProps) {
   const [activeSubTab, setActiveSubTab] = useState<string>("fit");
   const [isPrintMode, setIsPrintMode] = useState<boolean>(false);
 
   // Define tabs configuration
   const tabs = [
     { id: "fit", name: "Founder-Idea Fit", icon: <Target className="w-4 h-4" /> },
+    { id: "marketIntelligence", name: "Market Intelligence", icon: <Globe className="w-4 h-4" /> },
     { id: "market", name: "Market & Competitor", icon: <ShieldAlert className="w-4 h-4" /> },
     { id: "improvement", name: "Idea Innovation", icon: <Zap className="w-4 h-4" /> },
     { id: "skills", name: "Skill Curriculum", icon: <BookOpen className="w-4 h-4" /> },
@@ -546,6 +568,290 @@ export default function ReportView({ report }: ReportViewProps) {
     </div>
   );
 
+  const renderMarketIntelligenceSection = () => {
+    const research = report.marketResearch;
+
+    if (!research || !research.enabled) {
+      return (
+        <div className="space-y-6">
+          <div className="bg-slate-900/60 p-6 rounded-2xl border border-white/5 space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                <AlertCircle className="w-5 h-5 text-amber-400" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Live Web Intelligence Mode: Offline / Fallback</h3>
+                <span className="text-xs text-slate-400 font-mono">SERPAPI_API_KEY was not configured or web queries reached timeout.</span>
+              </div>
+            </div>
+            <p className="text-sm text-slate-300 leading-relaxed font-sans">
+              This FounderOS report was generated utilizing foundation AI reasoning models without live external search grounding.
+              To activate real-time web competitor discovery, recent industry news feeds, pricing benchmarks, and verified search citations, configure <code className="px-1.5 py-0.5 bg-white/10 rounded text-cyan-300 font-mono text-xs">SERPAPI_API_KEY</code> on the server.
+            </p>
+            {research?.limitations && research.limitations.length > 0 && (
+              <div className="p-4 bg-slate-950/60 rounded-xl border border-white/5 space-y-1.5">
+                <span className="text-xs font-mono text-slate-400 font-bold uppercase tracking-wider block">Execution Notes:</span>
+                <ul className="space-y-1 text-xs text-slate-400">
+                  {research.limitations.map((lim, idx) => (
+                    <li key={idx} className="flex items-start space-x-2">
+                      <span className="text-amber-400">•</span>
+                      <span>{lim}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {onNavigateToTab && (
+              <div className="pt-2">
+                <button
+                  onClick={() => onNavigateToTab("Idea Analyzer")}
+                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all shadow-lg shadow-blue-500/20 cursor-pointer"
+                >
+                  <Globe className="w-4 h-4" />
+                  <span>Launch Live SerpApi Market Research Now</span>
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-6">
+        {/* Live Status Header */}
+        <div className="bg-slate-900/60 p-6 rounded-2xl border border-emerald-500/20 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                <Globe className="w-5 h-5 text-emerald-400" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <h3 className="text-base font-bold text-white">Live Market Evidence (SerpApi Grounded)</h3>
+                  <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono rounded flex items-center space-x-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>Live Evidence</span>
+                  </span>
+                </div>
+                <span className="text-xs text-slate-400 font-mono">
+                  {research.searchedAt ? `Searched: ${new Date(research.searchedAt).toLocaleTimeString()}` : "Grounded with live web signals"}
+                </span>
+              </div>
+            </div>
+
+            {research.queries && research.queries.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 max-w-md">
+                {research.queries.map((q, idx) => (
+                  <span key={idx} className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-cyan-300 truncate" title={q}>
+                    🔍 {q}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* 1. Competitors Discovered */}
+        {research.competitors && research.competitors.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center space-x-2">
+              <Search className="w-4 h-4 text-cyan-400" />
+              <span>Discovered Incumbent Competitors & Alternatives</span>
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {research.competitors.map((comp, idx) => (
+                <div key={idx} className="bg-slate-900/40 p-5 rounded-2xl border border-white/5 space-y-3 flex flex-col justify-between hover:border-white/15 transition-all">
+                  <div className="space-y-2">
+                    <div className="flex items-start justify-between gap-2">
+                      <h5 className="text-sm font-bold text-white truncate">{comp.name}</h5>
+                      {comp.domain && (
+                        <span className="text-[10px] font-mono text-slate-400 px-2 py-0.5 bg-white/5 rounded border border-white/5 shrink-0">
+                          {comp.domain}
+                        </span>
+                      )}
+                    </div>
+                    {comp.snippet && (
+                      <p className="text-xs text-slate-300 line-clamp-3 leading-relaxed">
+                        "{comp.snippet}"
+                      </p>
+                    )}
+                  </div>
+                  {comp.link && (
+                    <a
+                      href={comp.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-1.5 text-xs text-cyan-400 hover:text-cyan-300 font-mono transition-colors pt-2 border-t border-white/5"
+                    >
+                      <span>Inspect Platform</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 2. Recent Industry News */}
+        {research.news && research.news.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center space-x-2">
+              <Newspaper className="w-4 h-4 text-indigo-400" />
+              <span>Recent Industry News & Market Developments</span>
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {research.news.map((item, idx) => (
+                <div key={idx} className="bg-slate-900/40 p-5 rounded-2xl border border-white/5 space-y-2 flex flex-col justify-between hover:border-white/15 transition-all">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                      <span className="text-indigo-400 font-semibold">{item.source}</span>
+                      {item.date && <span>{item.date}</span>}
+                    </div>
+                    <h5 className="text-xs sm:text-sm font-bold text-white leading-snug">{item.title}</h5>
+                    {item.snippet && (
+                      <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">{item.snippet}</p>
+                    )}
+                  </div>
+                  {item.link && (
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center space-x-1.5 text-xs text-indigo-400 hover:text-indigo-300 font-mono transition-colors pt-2 border-t border-white/5"
+                    >
+                      <span>Read Article</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 3. Market Signals & User Pain Points */}
+        {research.keySignals && research.keySignals.length > 0 && (
+          <div className="bg-slate-900/40 p-6 rounded-2xl border border-white/5 space-y-3">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center space-x-2">
+              <TrendingUp className="w-4 h-4 text-emerald-400" />
+              <span>Real-World Market Signals & Customer Inquiries</span>
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {research.keySignals.map((signal, idx) => (
+                <div key={idx} className="p-3 bg-slate-950/60 rounded-xl border border-white/5 text-xs text-slate-300 flex items-start space-x-2">
+                  <span className="text-emerald-400 font-bold select-none">•</span>
+                  <span>{signal}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 4. Pricing Signals (Conditional) */}
+        {research.pricingSignals && research.pricingSignals.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center space-x-2">
+              <ShoppingBag className="w-4 h-4 text-purple-400" />
+              <span>Product Pricing Benchmarks (Google Shopping)</span>
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {research.pricingSignals.map((p, idx) => (
+                <div key={idx} className="bg-slate-900/40 p-4 rounded-xl border border-white/5 space-y-2">
+                  <span className="text-xs font-bold text-white block truncate" title={p.title}>{p.title}</span>
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-purple-400 font-extrabold">{p.price || "Check Listing"}</span>
+                    <span className="text-slate-500 text-[10px]">{p.merchant || "Online"}</span>
+                  </div>
+                  {p.link && (
+                    <a href={p.link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-cyan-400 hover:underline block font-mono">
+                      View Listing →
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 5. Local Competitors (Conditional) */}
+        {research.localCompetitors && research.localCompetitors.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center space-x-2">
+              <MapPin className="w-4 h-4 text-rose-400" />
+              <span>Local Geographic Competitors (Google Maps)</span>
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {research.localCompetitors.map((loc, idx) => (
+                <div key={idx} className="bg-slate-900/40 p-4 rounded-xl border border-white/5 space-y-2">
+                  <span className="text-xs font-bold text-white block truncate">{loc.name}</span>
+                  <span className="text-[11px] text-slate-400 block truncate">{loc.address || "Local Area"}</span>
+                  {loc.rating && (
+                    <span className="text-xs font-mono text-amber-400 block">
+                      ★ {loc.rating} ({loc.reviews || 0} reviews)
+                    </span>
+                  )}
+                  {loc.link && (
+                    <a href={loc.link} target="_blank" rel="noopener noreferrer" className="text-[10px] text-cyan-400 hover:underline block font-mono">
+                      Website / Profile →
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 6. Verified Web Sources & Citations */}
+        {research.sources && research.sources.length > 0 && (
+          <div className="space-y-3">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider font-mono flex items-center space-x-2">
+              <CheckCircle className="w-4 h-4 text-cyan-400" />
+              <span>Verified Web Citations & Evidence Sources</span>
+            </h4>
+            <div className="bg-slate-900/40 rounded-2xl border border-white/5 divide-y divide-white/5 overflow-hidden">
+              {research.sources.map((src, idx) => (
+                <div key={idx} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-white/[0.02] transition-colors">
+                  <div className="space-y-1 pr-4">
+                    <span className="text-xs font-bold text-white block">{src.title}</span>
+                    {src.snippet && <p className="text-[11px] text-slate-400 line-clamp-1">{src.snippet}</p>}
+                    <span className="text-[10px] font-mono text-cyan-400/80">{src.domain}</span>
+                  </div>
+                  <a
+                    href={src.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-cyan-300 text-xs font-mono rounded-lg border border-white/10 transition-colors flex items-center space-x-1.5 shrink-0 self-start sm:self-auto cursor-pointer"
+                  >
+                    <span>Visit Source</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* 7. Research Scope & Limitations */}
+        {research.limitations && research.limitations.length > 0 && (
+          <div className="p-5 bg-white/[0.02] rounded-2xl border border-white/5 space-y-2">
+            <h5 className="text-xs font-mono uppercase tracking-wider text-slate-500 font-bold">Research Methodology & Scope Limitations:</h5>
+            <ul className="space-y-1 text-xs text-slate-400">
+              {research.limitations.map((lim, idx) => (
+                <li key={idx} className="flex items-start space-x-2">
+                  <span className="text-slate-500">•</span>
+                  <span>{lim}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-fade-in font-sans">
       
@@ -595,6 +901,7 @@ export default function ReportView({ report }: ReportViewProps) {
       {/* Main Tab Content */}
       <div className="bg-black/20 p-1 rounded-2xl">
         {activeSubTab === "fit" && renderFitSection()}
+        {activeSubTab === "marketIntelligence" && renderMarketIntelligenceSection()}
         {activeSubTab === "market" && renderMarketSection()}
         {activeSubTab === "improvement" && renderImprovementSection()}
         {activeSubTab === "skills" && renderSkillsSection()}

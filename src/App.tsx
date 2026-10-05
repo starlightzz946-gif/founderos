@@ -156,8 +156,9 @@ export default function App() {
       const reportsRef = collection(db, "startup_reports");
       const reportsSnap = await getDocs(query(reportsRef, where("userId", "==", uid)));
       if (!reportsSnap.empty) {
-        const rDoc = reportsSnap.docs[0];
-        const rData = rDoc.data() as StartupReport;
+        const reportsList = reportsSnap.docs.map(d => d.data() as StartupReport);
+        reportsList.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+        const rData = reportsList[0];
         setStartupReport(rData);
         setStartupIdea({
           startupName: rData.startupName,
@@ -520,7 +521,13 @@ export default function App() {
           {activeTab === "Idea Analyzer" && (
             <div className="space-y-6">
               <IdeaForm
-                startup={startupIdea || { startupName: "", idea: "", targetUsers: "", revenueModel: "", problemSolved: "" }}
+                startup={{
+                  startupName: startupIdea?.startupName ?? "",
+                  idea: startupIdea?.idea ?? "",
+                  targetUsers: startupIdea?.targetUsers ?? "",
+                  revenueModel: startupIdea?.revenueModel ?? "",
+                  problemSolved: startupIdea?.problemSolved ?? ""
+                }}
                 onChangeStartup={handleSaveStartupIdea}
                 onAnalyze={handleTriggerAIAnalysis}
                 analyzing={analyzingIdea}
@@ -529,7 +536,10 @@ export default function App() {
           )}
 
           {activeTab === "YC Partner Report" && startupReport && (
-            <ReportView report={startupReport} />
+            <ReportView
+              report={startupReport}
+              onNavigateToTab={(tab) => setActiveTab(tab)}
+            />
           )}
 
           {activeTab === "Interactive AI Mentor" && (

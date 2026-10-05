@@ -193,7 +193,7 @@ export default function MentorChat({ profile, startup, report }: MentorChatProps
         <input
           type="text"
           placeholder="Ask about marketing hooks, technical architectures, database normalizations..."
-          value={inputText}
+          value={inputText || ""}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyPress}
           disabled={sending}

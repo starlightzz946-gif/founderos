@@ -174,7 +174,61 @@ export interface StartupReport {
   executionRoadmap: ExecutionWeeks;
   revenuePlan: RevenuePlan;
   aiInvestorMode: InvestorMode;
+  marketResearch?: MarketResearchData;
   createdAt: string;
+}
+
+export interface MarketCompetitor {
+  name: string;
+  link?: string;
+  domain?: string;
+  snippet?: string;
+  sourceType?: string;
+}
+
+export interface MarketNewsItem {
+  title: string;
+  source: string;
+  link: string;
+  date?: string;
+  snippet?: string;
+}
+
+export interface MarketPricingSignal {
+  title: string;
+  price?: string;
+  merchant?: string;
+  link?: string;
+}
+
+export interface MarketLocalCompetitor {
+  name: string;
+  address?: string;
+  rating?: number;
+  reviews?: number;
+  link?: string;
+}
+
+export interface MarketSourceItem {
+  title: string;
+  link: string;
+  domain: string;
+  snippet?: string;
+  type: "search" | "news" | "shopping" | "local";
+}
+
+export interface MarketResearchData {
+  enabled: boolean;
+  searchedAt?: string;
+  queries?: string[];
+  competitors?: MarketCompetitor[];
+  alternatives?: Array<{ title: string; link?: string; snippet?: string }>;
+  news?: MarketNewsItem[];
+  pricingSignals?: MarketPricingSignal[];
+  localCompetitors?: MarketLocalCompetitor[];
+  sources?: MarketSourceItem[];
+  keySignals?: string[];
+  limitations?: string[];
 }
 
 export interface ChatMessage {
