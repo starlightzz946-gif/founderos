@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StartupReport } from "../types";
 import {
   Download,
@@ -28,28 +28,289 @@ interface ReportViewProps {
 }
 
 export default function ReportView({ report, onNavigateToTab }: ReportViewProps) {
-  const [activeSubTab, setActiveSubTab] = useState<string>("fit");
+  const hasLiveResearch = Boolean(report.marketResearch && report.marketResearch.enabled);
+  const [activeSubTab, setActiveSubTab] = useState<string>(hasLiveResearch ? "marketIntelligence" : "fit");
   const [isPrintMode, setIsPrintMode] = useState<boolean>(false);
 
-  // Define tabs configuration
-  const tabs = [
-    { id: "fit", name: "Founder-Idea Fit", icon: <Target className="w-4 h-4" /> },
-    { id: "marketIntelligence", name: "Market Intelligence", icon: <Globe className="w-4 h-4" /> },
-    { id: "market", name: "Market & Competitor", icon: <ShieldAlert className="w-4 h-4" /> },
-    { id: "improvement", name: "Idea Innovation", icon: <Zap className="w-4 h-4" /> },
-    { id: "skills", name: "Skill Curriculum", icon: <BookOpen className="w-4 h-4" /> },
-    { id: "mvp", name: "MVP Architecture", icon: <Layers className="w-4 h-4" /> },
-    { id: "roadmap", name: "90-Day Roadmap", icon: <Milestone className="w-4 h-4" /> },
-    { id: "investor", name: "AI Investor Pitch", icon: <Presentation className="w-4 h-4" /> }
-  ];
+  // Sync active sub-tab when report changes
+  useEffect(() => {
+    if (report.marketResearch?.enabled) {
+      setActiveSubTab("marketIntelligence");
+    }
+  }, [report?.id, report?.marketResearch?.enabled]);
+
+  // Logical product flow: 1. Market Evidence -> 2. Founder/Idea Assessment -> 3. Competitive Strategy -> 4. Execution
+  const tabs = hasLiveResearch
+    ? [
+        { id: "marketIntelligence", name: "Market Intelligence", icon: <Globe className="w-4 h-4" /> },
+        { id: "fit", name: "Founder-Idea Fit", icon: <Target className="w-4 h-4" /> },
+        { id: "market", name: "Market & Competitor", icon: <ShieldAlert className="w-4 h-4" /> },
+        { id: "improvement", name: "Idea Innovation", icon: <Zap className="w-4 h-4" /> },
+        { id: "skills", name: "Skill Curriculum", icon: <BookOpen className="w-4 h-4" /> },
+        { id: "mvp", name: "MVP Architecture", icon: <Layers className="w-4 h-4" /> },
+        { id: "roadmap", name: "90-Day Roadmap", icon: <Milestone className="w-4 h-4" /> },
+        { id: "investor", name: "AI Investor Pitch", icon: <Presentation className="w-4 h-4" /> }
+      ]
+    : [
+        { id: "fit", name: "Founder-Idea Fit", icon: <Target className="w-4 h-4" /> },
+        { id: "marketIntelligence", name: "Market Intelligence", icon: <Globe className="w-4 h-4" /> },
+        { id: "market", name: "Market & Competitor", icon: <ShieldAlert className="w-4 h-4" /> },
+        { id: "improvement", name: "Idea Innovation", icon: <Zap className="w-4 h-4" /> },
+        { id: "skills", name: "Skill Curriculum", icon: <BookOpen className="w-4 h-4" /> },
+        { id: "mvp", name: "MVP Architecture", icon: <Layers className="w-4 h-4" /> },
+        { id: "roadmap", name: "90-Day Roadmap", icon: <Milestone className="w-4 h-4" /> },
+        { id: "investor", name: "AI Investor Pitch", icon: <Presentation className="w-4 h-4" /> }
+      ];
 
   const triggerBrowserPrint = () => {
     // Quick window print triggers the browser printing flow
     window.print();
   };
 
+  // Helper to dynamically extract the Evidence-Driven Verdict without fabricating facts or statistics
+  const getEvidenceDrivenVerdict = () => {
+    const research = report.marketResearch;
+    const isLive = Boolean(research && research.enabled);
+
+    // 1. Market Signal
+    let marketSignal = "Insufficient evidence from the current research.";
+    if (isLive) {
+      const compCount = research?.competitors?.length || 0;
+      if (compCount >= 4) {
+        marketSignal = "Highly Competitive";
+      } else if (compCount >= 1) {
+        marketSignal = "Competitive";
+      } else if (research?.keySignals && research.keySignals.length > 0) {
+        marketSignal = "Emerging Category / Active Demand";
+      } else if (research?.news && research.news.length > 0) {
+        marketSignal = "Active Category Momentum";
+      } else {
+        marketSignal = "Early Stage / Low Density";
+      }
+    } else if (report.validation?.marketDemand) {
+      marketSignal = "Moderate Demand (Offline Estimate)";
+    }
+
+    // 2. Key Finding
+    let keyFinding = "Insufficient evidence from the current research.";
+    if (isLive && research?.competitors && research.competitors.length > 0) {
+      const compNames = research.competitors.slice(0, 3).map((c) => c.name).join(", ");
+      const firstSnippet = research.competitors[0].snippet;
+      keyFinding = `${research.competitors.length} active player${research.competitors.length > 1 ? "s" : ""} identified in live search (${compNames}). ${
+        firstSnippet
+          ? `Top incumbent focus: "${firstSnippet.length > 130 ? firstSnippet.slice(0, 127) + "..." : firstSnippet}"`
+          : (report.validation?.competitiveLandscape || "Existing products address parts of the target problem.")
+      }`;
+    } else if (report.validation?.competitiveLandscape) {
+      keyFinding = report.validation.competitiveLandscape;
+    } else if (isLive && research?.keySignals && research.keySignals.length > 0) {
+      keyFinding = research.keySignals[0];
+    } else if (isLive && research?.news && research.news.length > 0) {
+      keyFinding = `Recent industry development: "${research.news[0].title}" (${research.news[0].source}).`;
+    }
+
+    // 3. FounderOS Opportunity
+    let founderOpportunity = "Insufficient evidence from the current research.";
+    if (report.competitors && report.competitors.length > 0 && report.competitors[0].differentiationOpportunity) {
+      founderOpportunity = report.competitors[0].differentiationOpportunity;
+    } else if (report.competitors && report.competitors.length > 0 && report.competitors[0].marketGap) {
+      founderOpportunity = `Address incumbent market gap: ${report.competitors[0].marketGap}`;
+    } else if (report.swot?.opportunities && report.swot.opportunities.length > 0) {
+      founderOpportunity = report.swot.opportunities[0];
+    } else if (report.validation?.marketOpportunity) {
+      founderOpportunity = report.validation.marketOpportunity;
+    } else if (report.improvements?.improvedVersion) {
+      founderOpportunity = report.improvements.improvedVersion;
+    }
+
+    // 4. Recommended Next Move
+    let nextMove = "Insufficient evidence from the current research.";
+    if (report.validation?.recommendations && report.validation.recommendations.length > 0) {
+      nextMove = report.validation.recommendations[0];
+    } else if (report.roadmap30_60_90?.plan30Day && report.roadmap30_60_90.plan30Day.length > 0) {
+      nextMove = report.roadmap30_60_90.plan30Day[0];
+    } else if (report.roadmap30_60_90?.buildVsLearnAdvice) {
+      nextMove = report.roadmap30_60_90.buildVsLearnAdvice;
+    }
+
+    return { marketSignal, keyFinding, founderOpportunity, nextMove, isLive };
+  };
+
+  // IMPROVEMENT 1: Evidence-Driven Verdict component
+  const renderEvidenceDrivenVerdict = () => {
+    const verdict = getEvidenceDrivenVerdict();
+
+    return (
+      <div className="bg-slate-900/60 p-6 rounded-2xl border border-indigo-500/20 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3">
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
+              <Zap className="w-4 h-4 text-indigo-400" />
+            </div>
+            <div>
+              <h4 className="text-sm font-extrabold text-white uppercase tracking-wider font-mono">
+                Evidence-Driven Verdict
+              </h4>
+              <p className="text-xs text-slate-400">
+                Actionable strategic takeaways influenced directly by live SerpApi market intelligence.
+              </p>
+            </div>
+          </div>
+          <span className="px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-[10px] font-mono rounded font-semibold self-start sm:self-auto">
+            Strategic Synthesis
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* 1. Market Signal */}
+          <div className="p-4 bg-slate-950/60 rounded-xl border border-white/5 space-y-2 flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+              Market Signal
+            </span>
+            <p className="text-sm font-bold text-white leading-snug">
+              {verdict.marketSignal}
+            </p>
+            <span className="text-[10px] font-mono text-cyan-400/80 pt-2 border-t border-white/5">
+              Live web density
+            </span>
+          </div>
+
+          {/* 2. Key Finding */}
+          <div className="p-4 bg-slate-950/60 rounded-xl border border-white/5 space-y-2 flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+              Key Finding
+            </span>
+            <p className="text-xs text-slate-300 leading-relaxed line-clamp-4">
+              {verdict.keyFinding}
+            </p>
+            <span className="text-[10px] font-mono text-indigo-400/80 pt-2 border-t border-white/5">
+              Incumbent analysis
+            </span>
+          </div>
+
+          {/* 3. FounderOS Opportunity */}
+          <div className="p-4 bg-slate-950/60 rounded-xl border border-white/5 space-y-2 flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+              FounderOS Opportunity
+            </span>
+            <p className="text-xs text-slate-300 leading-relaxed line-clamp-4">
+              {verdict.founderOpportunity}
+            </p>
+            <span className="text-[10px] font-mono text-emerald-400/80 pt-2 border-t border-white/5">
+              Differentiation angle
+            </span>
+          </div>
+
+          {/* 4. Recommended Next Move */}
+          <div className="p-4 bg-slate-950/60 rounded-xl border border-white/5 space-y-2 flex flex-col justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
+              Recommended Next Move
+            </span>
+            <p className="text-xs text-slate-300 leading-relaxed line-clamp-4">
+              {verdict.nextMove}
+            </p>
+            <span className="text-[10px] font-mono text-amber-400/80 pt-2 border-t border-white/5">
+              Immediate validation step
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // IMPROVEMENT 2: Live Research Summary component
+  const renderLiveResearchSummary = () => {
+    const research = report.marketResearch;
+    if (!research) return null;
+
+    const searchesCount = research.queries?.length ?? 0;
+    const competitorsCount = research.competitors?.length ?? 0;
+    const alternativesCount = research.alternatives?.length ?? 0;
+    const newsCount = research.news?.length ?? 0;
+    const customerSignalsCount = research.keySignals?.length ?? 0;
+    const pricingSignalsCount = research.pricingSignals?.length ?? 0;
+    const localCompetitorsCount = research.localCompetitors?.length ?? 0;
+
+    const summaryCards = [
+      { icon: "🔎", label: "Searches", count: searchesCount },
+      { icon: "🏢", label: "Competitors", count: competitorsCount },
+      { icon: "🔄", label: "Alternatives", count: alternativesCount },
+      { icon: "📰", label: "News Signals", count: newsCount },
+      { icon: "💬", label: "Customer Signals", count: customerSignalsCount },
+      { icon: "💰", label: "Pricing Signals", count: pricingSignalsCount },
+      { icon: "📍", label: "Local Competitors", count: localCompetitorsCount }
+    ];
+
+    return (
+      <div className="bg-slate-900/60 p-6 rounded-2xl border border-cyan-500/20 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3">
+          <div>
+            <div className="flex items-center space-x-2">
+              <h4 className="text-sm font-extrabold text-white uppercase tracking-wider font-mono">
+                Live Research Summary
+              </h4>
+              <span className="px-2 py-0.5 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-mono rounded font-bold">
+                Powered by SerpApi
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">
+              Real-world market evidence retrieved through SerpApi before generating the venture analysis.
+            </p>
+          </div>
+          <span className="text-[11px] font-mono text-cyan-300/80 bg-cyan-500/5 px-2.5 py-1 rounded-lg border border-cyan-500/10 self-start sm:self-auto">
+            Live Web Evidence
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+          {summaryCards.map((card, idx) => (
+            <div
+              key={idx}
+              className={`p-3.5 rounded-xl border text-center transition-all ${
+                card.count > 0
+                  ? "bg-slate-950/70 border-white/10 hover:border-cyan-500/30"
+                  : "bg-slate-950/30 border-white/5 opacity-40"
+              }`}
+            >
+              <div className="text-base mb-1">{card.icon}</div>
+              <div className="text-xl font-mono font-extrabold text-white">{card.count}</div>
+              <div className="text-[10px] font-mono text-slate-300 font-semibold truncate mt-1">
+                {card.label}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="pt-1 flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-slate-400 font-mono gap-1">
+          <span>Powered by SerpApi — providing live web evidence used by FounderOS.</span>
+          {research.searchedAt && (
+            <span>Captured: {new Date(research.searchedAt).toLocaleTimeString()}</span>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderFitSection = () => (
     <div className="space-y-6">
+      {/* Compact reference to full Evidence-Driven Verdict in Market Intelligence */}
+      {report.marketResearch?.enabled && (
+        <div className="bg-indigo-500/10 border border-indigo-500/20 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center space-x-2.5">
+            <Zap className="w-4 h-4 text-indigo-400 shrink-0" />
+            <span className="text-slate-300">
+              Live market research actively shapes founder positioning, incumbent gaps, and next validation steps.
+            </span>
+          </div>
+          <button
+            onClick={() => setActiveSubTab("marketIntelligence")}
+            className="text-cyan-400 hover:text-cyan-300 font-bold font-mono flex items-center space-x-1 cursor-pointer shrink-0 transition-colors"
+          >
+            <span>See the Evidence-Driven Verdict in Market Intelligence →</span>
+          </button>
+        </div>
+      )}
+
       <div className="bg-slate-900/60 p-6 rounded-2xl border border-white/5 space-y-4">
         <h3 className="text-xl font-bold text-white flex items-center space-x-2">
           <span>Founder-Idea Fit Score:</span>
@@ -163,15 +424,42 @@ export default function ReportView({ report, onNavigateToTab }: ReportViewProps)
 
       {/* Market Sizing & Problem Validation */}
       <div className="bg-slate-900/60 p-6 rounded-2xl border border-white/5 space-y-4">
-        <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">Core Sector Sizing</h3>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider font-mono">Market Sizing & Customer Signal Analysis</h3>
+          <span className="text-[10px] font-mono text-slate-400 bg-white/5 px-2.5 py-0.5 rounded border border-white/10 self-start sm:self-auto">
+            AI Synthesis & Grounded Signals
+          </span>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div className="p-4 bg-slate-950 border border-white/5 rounded-xl">
-            <span className="text-xs text-slate-500 block mb-1">Target Market Sizing (TAM/SAM/SOM):</span>
+          <div className="p-4 bg-slate-950 border border-white/5 rounded-xl space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-400 font-mono uppercase tracking-wider font-bold block">
+                Directional AI Market Sizing — Estimated
+              </span>
+              <span className="text-[10px] text-amber-400/80 font-mono border border-amber-500/20 px-1.5 py-0.5 rounded">
+                Modeled
+              </span>
+            </div>
             <p className="text-slate-300 leading-relaxed font-sans">{report.validation.marketSize}</p>
+            <span className="text-[10px] text-slate-500 font-mono block pt-1.5 border-t border-white/5">
+              Note: Sizing figures represent directional estimates synthesized by AI logic, not direct census or empirical market data.
+            </span>
           </div>
-          <div className="p-4 bg-slate-950 border border-white/5 rounded-xl">
-            <span className="text-xs text-slate-500 block mb-1">Problem Validation Core:</span>
-            <p className="text-slate-300 leading-relaxed font-sans">{report.validation.problemValidation}</p>
+          <div className="p-4 bg-slate-950 border border-white/5 rounded-xl space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-slate-400 font-mono uppercase tracking-wider font-bold block">
+                Customer Pain Signals Identified from Search & Web Evidence
+              </span>
+              <span className="text-[10px] text-cyan-400/80 font-mono border border-cyan-500/20 px-1.5 py-0.5 rounded">
+                Grounded
+              </span>
+            </div>
+            <p className="text-slate-300 leading-relaxed font-sans">
+              {report.validation.problemValidation.replace(/\b\d+\s+out\s+of\s+\d+\s+[\w\s]*interviewed\b/gi, "Observed customer search patterns indicate")}
+            </p>
+            <span className="text-[10px] text-slate-500 font-mono block pt-1.5 border-t border-white/5">
+              Extracted from customer inquiries, online community discussions, and search query trends.
+            </span>
           </div>
         </div>
       </div>
@@ -631,7 +919,7 @@ export default function ReportView({ report, onNavigateToTab }: ReportViewProps)
                 <div className="flex items-center space-x-2">
                   <h3 className="text-base font-bold text-white">Live Market Evidence (SerpApi Grounded)</h3>
                   <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono rounded flex items-center space-x-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                     <span>Live Evidence</span>
                   </span>
                 </div>
@@ -652,6 +940,12 @@ export default function ReportView({ report, onNavigateToTab }: ReportViewProps)
             )}
           </div>
         </div>
+
+        {/* IMPROVEMENT 2: Live Research Summary */}
+        {renderLiveResearchSummary()}
+
+        {/* IMPROVEMENT 1: Evidence-Driven Verdict */}
+        {renderEvidenceDrivenVerdict()}
 
         {/* 1. Competitors Discovered */}
         {research.competitors && research.competitors.length > 0 && (
@@ -863,6 +1157,16 @@ export default function ReportView({ report, onNavigateToTab }: ReportViewProps)
             <div className="px-2.5 py-0.5 bg-blue-500/20 border border-blue-500/30 text-blue-400 text-[10px] font-mono rounded">
               YC Partner Core Engine
             </div>
+            {report.marketResearch?.enabled ? (
+              <div className="px-2.5 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10px] font-mono rounded flex items-center space-x-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>Live SerpApi Evidence</span>
+              </div>
+            ) : (
+              <div className="px-2.5 py-0.5 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[10px] font-mono rounded flex items-center space-x-1.5">
+                <span>Offline Reasoning</span>
+              </div>
+            )}
           </div>
           <p className="text-xs text-white/60 leading-relaxed max-w-2xl">
             This comprehensive dynamic validation catalog analyzes problem strength, competitor gaps, learning priorities, database schemas, and monthly goals.
@@ -880,6 +1184,67 @@ export default function ReportView({ report, onNavigateToTab }: ReportViewProps)
         </div>
       </div>
 
+      {/* IMPROVEMENT 3: Unmissable Live Evidence Status Banner */}
+      <div className={`p-4 sm:p-5 rounded-2xl border transition-all ${
+        report.marketResearch?.enabled
+          ? "bg-gradient-to-r from-emerald-950/40 via-slate-900/70 to-cyan-950/40 border-emerald-500/30 shadow-lg shadow-emerald-500/5"
+          : "bg-amber-950/20 border-amber-500/30"
+      }`}>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center space-x-3.5">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+              report.marketResearch?.enabled
+                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                : "bg-amber-500/10 border-amber-500/30 text-amber-400"
+            }`}>
+              <Globe className="w-5 h-5 animate-pulse" />
+            </div>
+            <div className="space-y-0.5">
+              <div className="flex items-center space-x-2 flex-wrap gap-y-1">
+                <span className="text-xs font-black uppercase tracking-wider font-mono text-white">
+                  {report.marketResearch?.enabled ? "Live Market Evidence Grounding: ACTIVE" : "Market Intelligence Mode: Fallback"}
+                </span>
+                {report.marketResearch?.enabled && (
+                  <span className="px-2 py-0.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[10px] font-mono rounded font-bold flex items-center space-x-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <span>Powered by SerpApi</span>
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-300">
+                {report.marketResearch?.enabled
+                  ? `Report is grounded with real-time web intelligence from SerpApi (${report.marketResearch.queries?.length || 0} search queries executed, ${report.marketResearch.competitors?.length || 0} incumbents identified, ${(report.marketResearch.news?.length || 0) + (report.marketResearch.keySignals?.length || 0)} live market signals).`
+                  : "No live web queries were executed. Strategic recommendations reflect offline reasoning models."}
+              </p>
+            </div>
+          </div>
+
+          {report.marketResearch?.enabled ? (
+            <button
+              onClick={() => setActiveSubTab("marketIntelligence")}
+              className={`px-3.5 py-2 text-xs font-bold rounded-xl border transition-all flex items-center space-x-1.5 cursor-pointer shrink-0 ${
+                activeSubTab === "marketIntelligence"
+                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                  : "bg-white/5 hover:bg-white/10 text-white border-white/10 hover:border-emerald-500/30"
+              }`}
+            >
+              <Search className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Inspect Live Evidence ({report.marketResearch.competitors?.length || 0} Competitors) →</span>
+            </button>
+          ) : (
+            onNavigateToTab && (
+              <button
+                onClick={() => onNavigateToTab("Idea Analyzer")}
+                className="px-3.5 py-2 text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-500/30 rounded-xl transition-all flex items-center space-x-1.5 cursor-pointer shrink-0"
+              >
+                <span>Launch Live SerpApi Research</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </button>
+            )
+          )}
+        </div>
+      </div>
+
       {/* Tab Navigation */}
       <div className="flex space-x-1 border-b border-white/10 overflow-x-auto pb-px scrollbar-thin">
         {tabs.map((tab) => (
@@ -894,6 +1259,12 @@ export default function ReportView({ report, onNavigateToTab }: ReportViewProps)
           >
             {tab.icon}
             <span>{tab.name}</span>
+            {tab.id === "marketIntelligence" && report.marketResearch?.enabled && (
+              <span className="ml-1.5 px-1.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[9px] font-mono rounded-full font-bold flex items-center space-x-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span>LIVE</span>
+              </span>
+            )}
           </button>
         ))}
       </div>

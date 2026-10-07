@@ -6,5 +6,7 @@
   "firestoreDatabaseId": "ai-studio-62232ab8-b196-4c4b-8baf-3f7578590693",
   "storageBucket": "feisty-mote-tsjh2.firebasestorage.app",
   "messagingSenderId": "303416593171",
-  "measurementId": ""
+  "measurementId": "",
+  "oAuthClientId": "303416593171-qqm69tcoil16c5la2esnn7hi4ul9ojq6.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
 }

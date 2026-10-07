@@ -146,13 +146,47 @@ export default function DashboardView({ profile, report, onUpdateXP, onNavigateT
         </div>
       </div>
 
+      {/* Prominent First-Screen Live Market Intelligence CTA Card */}
+      {report && (
+        <div className="bg-gradient-to-r from-emerald-950/40 via-slate-900/80 to-cyan-950/40 border border-emerald-500/30 p-5 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg shadow-emerald-500/5">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <h3 className="text-sm font-extrabold text-white uppercase tracking-wider font-mono">
+                Live Market Intelligence Report Ready
+              </h3>
+              <span className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-mono rounded font-bold">
+                Powered by SerpApi
+              </span>
+            </div>
+            <p className="text-xs text-slate-300">
+              Venture <strong className="text-white">{report.startupName}</strong> is actively grounded in real-time web research, verified competitors, and market evidence.
+            </p>
+          </div>
+          <button
+            onClick={() => onNavigateToTab("YC Partner Report")}
+            className="px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs rounded-xl shadow-lg shadow-emerald-500/20 flex items-center space-x-2 transition-all cursor-pointer shrink-0"
+          >
+            <span>View Live Market Intelligence Report →</span>
+          </button>
+        </div>
+      )}
+
       {/* Main Core Scores Section */}
       {report ? (
         <div className="space-y-6">
-          <h2 className="text-sm font-bold text-white tracking-widest uppercase font-mono flex items-center space-x-2">
-            <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-            <span>Startup Intelligence Metrics</span>
-          </h2>
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <h2 className="text-sm font-bold text-white tracking-widest uppercase font-mono flex items-center space-x-2">
+              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              <span>Startup Intelligence Metrics</span>
+            </h2>
+            {report.marketResearch?.enabled && (
+              <div className="flex items-center space-x-1.5 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-emerald-400 text-[10px] font-mono">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>Live SerpApi Grounding Active</span>
+              </div>
+            )}
+          </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {renderScoreGauge(report.founderScore, "Founder Score", "stroke-blue-500 animate-pulse", "bg-blue-500")}
             {renderScoreGauge(report.startupScore, "Startup Viability", "stroke-purple-500", "bg-purple-500")}

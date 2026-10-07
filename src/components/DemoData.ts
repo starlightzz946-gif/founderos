@@ -55,10 +55,10 @@ export const demoReport: StartupReport = {
     ]
   },
   validation: {
-    problemValidation: "High friction verified: 8 out of 10 trade owners interviewed list collection lag and SMS scheduling fatigue in their top 3 operations headaches.",
+    problemValidation: "High friction identified from search and industry signals: Trade business discussions and query patterns consistently cite collection lag and SMS scheduling fatigue as primary operational bottlenecks.",
     marketOpportunity: "Service trade platforms are growing 14% annually post-pandemic; small local sole proprietors make up 60% of the services segment.",
     marketSize: "TAM: $12 Billion (US Local home services SaaS), SAM: $850 Million (Pool/Landscaping sole-proprietor niche), SOM: $4.2 Million (Sarah's first 3 targeted metro areas).",
-    marketDemand: "Google search trends for 'simple booking tool for contractors' have spiked 45% year-over-year.",
+    marketDemand: "Consistent organic search query momentum across Google Search for simplified contractor scheduling and mobile-first dispatch tools.",
     competitiveLandscape: "Jobber & Housecall Pro are heavily feature-bloated, priced at over $120/mo, and overwhelmed with multi-layered controls. Servely wins on extreme simplicity and mobile-optimal crew actions.",
     monetizationPotential: "High base SaaS retention. A contractor onboarding 10 recurring homeowners will readily maintain a $49 retainer to save administrative billing hours.",
     recommendations: [

@@ -86,9 +86,9 @@ export default function LandingPage({ onLoginSuccess, onSeeDemoClick }: LandingP
 
       {/* Hero Section */}
       <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 text-center">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-white/5 rounded-full border border-white/10 mb-6 backdrop-blur">
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1 bg-white/5 rounded-full border border-emerald-500/30 mb-6 backdrop-blur shadow-sm shadow-emerald-500/10">
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs font-mono text-slate-300">Powered by Gemini 3.5 AI Core</span>
+          <span className="text-xs font-mono text-emerald-300 font-semibold">Live Market Intelligence Powered by SerpApi & Gemini</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight max-w-4xl mx-auto">
@@ -98,8 +98,8 @@ export default function LandingPage({ onLoginSuccess, onSeeDemoClick }: LandingP
           </span>
         </h1>
 
-        <p className="text-lg sm:text-xl text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed">
-          FounderOS analyzes your idea, skills, market, competition, learning gaps, and execution roadmap to tell you exactly what to do next. It's like having a YC Partner, investor, and AI co-founder in one operating system.
+        <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed font-sans">
+          FounderOS researches the live web to discover real competitors, market signals, customer evidence and current industry information before generating startup strategy. Powered by live SerpApi intelligence and Gemini synthesis.
         </p>
 
         {error && (
@@ -153,7 +153,7 @@ export default function LandingPage({ onLoginSuccess, onSeeDemoClick }: LandingP
           {[
             { step: "01", title: "Complete Profile", desc: "Share your background, key skills, available weekly hours, and capital budget." },
             { step: "02", title: "Describe Startup", desc: "Submit your basic idea, target customer, problem statement, and revenue target." },
-            { step: "03", title: "AI Generation", desc: "Our Gemini agent models run competitive benchmarks and validation checklists." },
+            { step: "03", title: "Live SerpApi Research & AI Grounding", desc: "FounderOS sends focused searches to the live web via SerpApi, filters real competitor & customer evidence, and provides that evidence to Gemini for strategic synthesis. (Founder Idea → Live SerpApi Research → Evidence Filtering → Gemini Synthesis → Founder Strategy)" },
             { step: "04", title: "Action Roadmaps", desc: "Get structural 30/60/90 days steps, skill modules, and the Build-vs-Learn ratio." }
           ].map((item, idx) => (
             <div key={idx} className="bg-white/[0.02] border border-white/5 p-6 rounded-2xl relative overflow-hidden group hover:border-white/10 transition-colors">

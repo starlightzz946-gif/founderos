@@ -215,7 +215,7 @@ export default function App() {
         problemSolved: demoReport.problemSolved
       });
       setWeeklyAudits([]);
-      setActiveTab("Dashboard");
+      setActiveTab("YC Partner Report");
     } else {
       await loadUserData(userId);
       setActiveTab("Dashboard");
@@ -411,7 +411,7 @@ export default function App() {
     { id: "Dashboard", name: "Dashboard Core", icon: <LayoutDashboard className="w-4 h-4" /> },
     { id: "Founder Profile", name: "Venture Profile", icon: <User className="w-4 h-4" /> },
     { id: "Idea Analyzer", name: "Viability Lab", icon: <Rocket className="w-4 h-4" /> },
-    ...(startupReport ? [{ id: "YC Partner Report", name: "YC Partner Report", icon: <FileText className="w-4 h-4" /> }] : []),
+    ...(startupReport ? [{ id: "YC Partner Report", name: "Market & Venture Report", icon: <FileText className="w-4 h-4" /> }] : []),
     { id: "Interactive AI Mentor", name: "Context AI Mentor", icon: <MessageSquare className="w-4 h-4" /> },
     { id: "Weekly Operational Audit", name: "Founder Weekly Audit", icon: <Milestone className="w-4 h-4" /> }
   ];
@@ -456,7 +456,10 @@ export default function App() {
               }`}
             >
               <span className={activeTab === item.id ? "text-blue-400" : "text-white/40"}>{item.icon}</span>
-              <span>{item.name}</span>
+              <span className="flex-grow">{item.name}</span>
+              {item.id === "YC Partner Report" && startupReport?.marketResearch?.enabled && (
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" title="Live SerpApi Evidence Active" />
+              )}
             </button>
           ))}
         </nav>
